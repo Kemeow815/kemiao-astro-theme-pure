@@ -1,14 +1,9 @@
 // @ts-check
 
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
-import vercel from '@astrojs/vercel'
+import vercelStatic from '@astrojs/vercel/static'; 
 import AstroPureIntegration from 'astro-pure'
 import { defineConfig } from 'astro/config'
-import rehypeKatex from 'rehype-katex'
-import remarkMath from 'remark-math'
-
-// Others
-// import { visualizer } from 'rollup-plugin-visualizer'
 
 // Local integrations
 // Local rehype & remark plugins
@@ -27,37 +22,31 @@ import config from './src/site.config.ts'
 // https://astro.build/config
 export default defineConfig({
   // Top-Level Options
-  site: 'https://astro-pure.js.org',
+  site: 'https://kmblog.kemeow.top',
   // base: '/docs',
   trailingSlash: 'never',
 
   // Adapter
   // https://docs.astro.build/en/guides/deploy/
   // 1. Vercel (serverless)
-  adapter: vercel(),
-  output: 'server',
+  // adapter: vercel(),
+  // output: 'server',
   // 2. Vercel (static)
-  // adapter: vercelStatic(),
+  // @ts-ignore
+  adapter: vercelStatic(), 
   // 3. Local (standalone)
   // adapter: node({ mode: 'standalone' }),
   // output: 'server',
   // ---
 
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/sharp'
-    }
-  },
+  image: { service: { entrypoint: 'astro/assets/services/sharp' }, domains: ['ghchart.rshah.org'] },
 
   integrations: [
     // astro-pure will automatically add sitemap, mdx & unocss
     // sitemap(),
     // mdx(),
-    AstroPureIntegration(config)
-    // (await import('@playform/compress')).default({
-    //   SVG: false,
-    //   Exclude: ['index.*.js']
-    // }),
+    AstroPureIntegration(config),
+    (await import('@playform/compress')).default({ SVG: false, Exclude: ['index.*.js'] }),
 
     // Temporary fix vercel adapter
     // static build method is not needed
@@ -72,9 +61,7 @@ export default defineConfig({
   },
   // Markdown Options
   markdown: {
-    remarkPlugins: [remarkMath],
     rehypePlugins: [
-      [rehypeKatex, {}],
       rehypeHeadingIds,
       [
         rehypeAutolinkHeadings,
@@ -103,13 +90,5 @@ export default defineConfig({
   },
   experimental: {
     contentIntellisense: true
-  },
-  vite: {
-    plugins: [
-      //   visualizer({
-      //     emitFile: true,
-      //     filename: 'stats.html'
-      //   })
-    ]
   }
 })
