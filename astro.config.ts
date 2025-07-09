@@ -1,5 +1,3 @@
-// @ts-check
-
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import vercelStatic from '@astrojs/vercel/static'; 
 import AstroPureIntegration from 'astro-pure'
